@@ -292,6 +292,8 @@ print(f'{coord1.get_coordinates()} is {coord1.get_coordinates_polar()} in polar 
 
 # 9
 class Rectangle:
+    name = 'Rectangle'
+
     def __init__(self, base, height):
         self.__base = base
         self.__height = height
@@ -322,6 +324,7 @@ class Rectangle:
 
 
 class Square:
+    name = 'Square'
     def __init__(self, size):
         self.__size = size
 
@@ -345,6 +348,7 @@ class Square:
 
 
 class Circle:
+    name = 'Circle'
     def __init__(self, radius):
         self.__radius = radius
 
@@ -362,4 +366,43 @@ class Circle:
     def radius(self, new_radius):
         self.__radius = new_radius
 
+
+shapes = [
+    Rectangle(4, 8),
+    Square(10),
+    Circle(5)
+]
+
+for shape in shapes:
+    print(f'Forma: {shape.name}')
+    print(f'área: {shape.area():.2f} u.a.')
+    print(f'perímetro: {shape.perimeter():.2f} u.c.')
+
+
+class Fraction:
+    def __init__(self, numerator, denominator=1):
+        self.__numerator = numerator
+        self.__denominator = denominator
+
+    @property
+    def numerator(self):
+        return self.__numerator
+
+    @numerator.setter
+    def numerator(self, value):
+        if not isinstance(value, int):
+            raise TypeError
+
+        self.__numerator = value
+
+    @property
+    def denominator(self):
+        return self.__denominator
+
+    @denominator.setter
+    def denominator(self, value):
+        if not isinstance(value, int):
+            raise TypeError
+
+        self.__denominator = value
 
