@@ -384,6 +384,62 @@ class Fraction:
         self.__numerator = numerator
         self.__denominator = denominator
 
+    @classmethod
+    def from_real_number(cls, number):
+        # pega a parte decimal do número e a quantidade de algarismos
+        digits_after_point = len(str(number).split('.')[1])
+
+        denominator = int(10 ** digits_after_point)
+        numerator = int(number * 10 ** digits_after_point)
+
+        gcd = math.gcd(denominator, numerator)
+        numerator //= gcd
+        denominator //= gcd
+
+        return cls(numerator, denominator)
+
+    def compute(self):
+        return self.__numerator / self.__denominator
+
+    def invert(self):
+        temp = self.__numerator
+        self.__numerator = self.__denominator
+        self.__denominator = temp
+        return self
+
+    def simplify(self):
+        gcd = math.gcd(self.__denominator, self.__numerator)
+        self.__numerator //= gcd
+        self.__denominator //= gcd
+        return self
+
+    def __str__(self):
+        return f'{self.__numerator}/{self.__denominator}'
+
+    def __add__(self, other):
+        if self.__denominator == other.denominator:
+            new_numerator = self.__numerator + other.numerator
+            return Fraction(new_numerator, self.__denominator)
+
+        lcm = math.lcm(self.__denominator, other.denominator)
+        new_numerator_term1 = (lcm // self.__denominator) * self.__numerator
+        new_numerator_term2 = (lcm // other.denominator) * other.numerator
+        new_numerator = new_numerator_term1 + new_numerator_term2
+
+        return Fraction(new_numerator, lcm)
+
+    def __sub__(self, other):
+        return self + Fraction(-other.numerator, other.denominator)
+
+    def __mul__(self, other):
+        new_numerator = self.__numerator * other.numerator
+        new_denominator = self.__denominator * other.denominator
+
+        return Fraction(new_numerator, new_denominator)
+
+    def __div__(self, other):
+        return self * Fraction(other.denominator, other.numerator)
+
     @property
     def numerator(self):
         return self.__numerator
@@ -406,3 +462,16 @@ class Fraction:
 
         self.__denominator = value
 
+
+frac1 = Fraction(2, 3)
+frac2 = Fraction(3, 9)
+print(frac1 + frac2)
+print(frac1 - frac2)
+print((frac1 - frac2).simplify())
+
+frac3 = Fraction.from_real_number(0.75)
+frac4 = Fraction(6, 5)
+print(f'from 0.75: {frac3}')
+
+print(frac3 * frac4)
+print(frac3 / frac4)
