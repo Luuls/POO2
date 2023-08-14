@@ -1,12 +1,11 @@
 # 1
-
 class Television:
     def __init__(self):
         self.__is_on = False
         self.__channel = 2
 
-# 2
 
+# 2
 class Television:
     def __init__(self):
         self.__is_on = False
@@ -46,8 +45,8 @@ print('tv2')
 print(f'brand: {tv2.brand}')
 print(f'size: {tv2.size}')
 
-# 3 
 
+# 3 
 class Television:
     def __init__(self, channel = 2):
         self.__is_on = False
@@ -79,7 +78,6 @@ class Television:
 
 
 # 4
-
 class Television:
     def __init__(self, channel = 2):
         self.__is_on = False
@@ -123,7 +121,6 @@ class Television:
 
 
 # 5
-
 class Television:
     def __init__(self, channel=2, min_channel=2, max_channel=14):
         self.__is_on = False
@@ -170,7 +167,6 @@ class Television:
 
 
 # 7
-
 class City:
     def __init__(self, name, population_count):
         self.__name = name
