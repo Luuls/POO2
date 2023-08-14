@@ -227,11 +227,12 @@ class State:
         return self.__population_count
 
 
-state1 = State('Santa Catarina', 'SC', [City('Florianópolis', 537213), City('Blumenau', 361855)])
-state2 = State('Minas Gerais', 'MG', [City('Belo Horizonte', 2315560), City('Ouro Preto', 74824)])
-state3 = State('Pernambuco', 'PE', [City('Recife', 1488920), City('Petrolina', 386786)])
+states = [
+    State('Santa Catarina', 'SC', [City('Florianópolis', 537213), City('Blumenau', 361855)]),
+    State('Minas Gerais', 'MG', [City('Belo Horizonte', 2315560), City('Ouro Preto', 74824)]),
+    State('Pernambuco', 'PE', [City('Recife', 1488920), City('Petrolina', 386786)])
+]
 
-states = [state1, state2, state3]
 for state in states:
     print(f'Estado: {state.name}, {state.accronym}')
     print(f'População total: {state.population_count} pessoas')
