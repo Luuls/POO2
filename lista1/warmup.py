@@ -242,3 +242,124 @@ for state in states:
         print(f'\t{city.name}: {city.population_count} pessoas')
 
     print('\n')
+
+
+# 8
+import math
+class Coordinate:
+    def __init__(self, x, y):
+        self.__x = x
+        self.__y = y
+
+    def distance_to(self, coordinate):
+        delta_x = self.__x - coordinate.x
+        delta_y = self.__y - coordinate.y
+
+        return math.sqrt(abs(delta_x) ** 2 + abs(delta_y) ** 2)
+
+    def get_coordinates(self):
+        return f'({self.__x}, {self.__y})'
+
+    def get_coordinates_polar(self):
+        magnitude = self.distance_to(Coordinate(0, 0))
+        angle = math.degrees(math.atan(self.__y / self.__x))
+
+        return f'{magnitude}∠{angle:.2f}°'
+
+    @property
+    def x(self):
+        return self.__x
+
+    @x.setter
+    def x(self, value):
+        self.__x = value
+
+    @property
+    def y(self):
+        return self.__y
+
+    @y.setter
+    def y(self, value):
+        self.__y = value
+
+
+coord1 = Coordinate(3, 4)
+coord2 = Coordinate(-12, -16)
+
+print(f'distance from {coord1.get_coordinates()} to {coord2.get_coordinates()} is {coord1.distance_to(coord2)}')
+print(f'{coord1.get_coordinates()} is {coord1.get_coordinates_polar()} in polar form')
+
+
+# 9
+class Rectangle:
+    def __init__(self, base, height):
+        self.__base = base
+        self.__height = height
+
+    def area(self):
+        return self.__base * self.__height
+
+    def perimeter(self):
+        return 2 * (self.__base + self.__height)
+
+    @property
+    def base(self):
+        return self.__base
+
+    @base.setter
+    def base(self, new_base):
+        if new_base >= 0:
+            self.__base = new_base
+
+    @property
+    def height(self):
+        return self.__height
+
+    @height.setter
+    def height(self, new_height):
+        if new_height >= 0:
+            self.__height = new_height
+
+
+class Square:
+    def __init__(self, size):
+        self.__size = size
+
+    def area(self):
+        return self.__size ** 2
+
+    def perimeter(self):
+        return 4 * self.__size
+    
+    def diagonal(self):
+        return self.__size * math.sqrt(2)
+
+    @property
+    def size(self):
+        return self.__size
+
+    @size.setter
+    def size(self, new_size):
+        if new_size >= 0:
+            self.__size = new_size
+
+
+class Circle:
+    def __init__(self, radius):
+        self.__radius = radius
+
+    def area(self):
+        return math.pi * self.__radius ** 2
+
+    def perimeter(self):
+        return 2 * math.pi * self.__radius
+
+    @property
+    def radius(self):
+        return self.__radius
+
+    @radius.setter
+    def radius(self, new_radius):
+        self.__radius = new_radius
+
+
