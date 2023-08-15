@@ -26,7 +26,7 @@ class Vector:
 
     def __add__(self, other):
         if self.__size != other.size:
-            raise ValueError
+            raise BufferError
 
         new_vector = [0] * self.__size
         for i, (this_element, other_element) in enumerate(zip(self.__elements, other.elements)):
