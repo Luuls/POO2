@@ -437,7 +437,7 @@ class Fraction:
 
         return Fraction(new_numerator, new_denominator)
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         return self * Fraction(other.denominator, other.numerator)
 
     @property
@@ -474,4 +474,7 @@ frac4 = Fraction(6, 5)
 print(f'from 0.75: {frac3}')
 
 print(frac3 * frac4)
-print(frac3 / frac4)
+
+div = frac3 / frac4
+print(div)
+print(div.compute())
