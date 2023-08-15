@@ -1,8 +1,9 @@
+import datetime
+
 class Client:
     def __init__(self, name, telephone):
         self.__name = name
         self.__telephone = telephone
-
 
     @property
     def name(self):
@@ -20,27 +21,29 @@ class Client:
     def telephone(self, new_telephone):
         self.__telephone = new_telephone
 
+class Operation:
+    def __init__(self, date, operation, value):
+        self.__date = date
+        self.__operation = operation
+        self.__value = value
+
+    @property
+    def date(self):
+        return self.__date
+
+    @property
+    def operation(self):
+        return self.__operation
+
+    @property
+    def value(self):
+        return self.__value
 
 class Account:
     def __init__(self, owners, balance=0):
         self.__owners = owners
         self.__balance = balance
-
-    @property
-    def owners(self):
-        return self.__owners
-
-    @owners.setter
-    def owners(self, new_owners):
-        self.__owners = new_owners
-
-    @property
-    def balance(self):
-        return self.__balance
-
-    @balance.setter
-    def balance(self, new_balance):
-        self.__balance = new_balance
+        self.__operations = []
 
     def add_owner(self, owner):
         self.__owners.append(owner)
@@ -55,6 +58,7 @@ class Account:
             raise ValueError
 
         self.__balance += value
+        self.__create_operation('Deposit', value)
 
     def withdraw(self, value):
         if value < 0:
@@ -64,6 +68,36 @@ class Account:
             print(f'Saldo insuficiente. Tentando sacar R${value} de um total de R${self.balance}')
 
         self.__balance -= value
+        self.__create_operation('Withdraw', value)
+
+    def __create_operation(self, operation, value):
+        current_datetime = datetime.datetime.now()
+        current_operation = Operation(current_datetime, operation, value)
+        self.__operations.append(current_operation)
+
+
+    @property
+    def owners(self):
+        return self.__owners
+
+    @owners.setter
+    def owners(self, new_owners):
+        if len(new_owners) == 0:
+            raise BufferError
+
+        self.__owners = new_owners
+
+    @property
+    def balance(self):
+        return self.__balance
+
+    @balance.setter
+    def balance(self, new_balance):
+        self.__balance = new_balance
+
+    @property
+    def operations(self):
+        return self.__operations.copy()
 
 
 class Bank:
@@ -104,4 +138,10 @@ class Bank:
     def remove_account_by_name(self, name):
         return self._search(name)
 
-    def __add__(self, other)
+
+clients = [Client('Luan', '48984449999')]
+acc = Account(clients, 400)
+acc.deposit(502)
+for operation in acc.operations:
+    formatted_time = operation.date.strftime('%d/%m/%Y %H:%M:%S')
+    print(f'{operation.operation}: R${operation.value:.2f}, {formatted_time}')
