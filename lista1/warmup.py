@@ -163,7 +163,8 @@ class Television:
         self.__channel -= 1
 
 
-# 6 (?)
+# 6 
+tv = Television(10, min_channel=0, max_channel=99)
 
 
 # 7
