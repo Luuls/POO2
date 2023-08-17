@@ -21,10 +21,13 @@ class Client:
     def telephone(self, new_telephone):
         self.__telephone = new_telephone
 
+    def __repr__(self) -> str:
+        return f'<{self.__name}, {self.__telephone}>'
+        
+
 class Operation:
-    def __init__(self, date, operation, value):
+    def __init__(self, date, value):
         self.__date = date
-        self.__operation = operation
         self.__value = value
 
     @property
@@ -32,12 +35,31 @@ class Operation:
         return self.__date
 
     @property
-    def operation(self):
-        return self.__operation
-
-    @property
     def value(self):
         return self.__value
+
+
+class Withdraw(Operation):
+    __operation = 'Saque'
+
+    def __init__(self, date, value):
+        Operation.__init__(self, date, value)
+
+    @property
+    def operation(self):
+        return Withdraw.__operation
+
+
+class Deposit(Operation):
+    __operation = 'Depósito'
+
+    def __init__(self, date, value):
+        Operation.__init__(self, date, value)
+
+    @property
+    def operation(self):
+        return Deposit.__operation
+
 
 class CheckingAccount:
     def __init__(self, owners, balance=0):
@@ -58,7 +80,7 @@ class CheckingAccount:
             raise ValueError
 
         self.__balance += value
-        self.__create_operation('Depósito', value)
+        self.__create_operation(Deposit, value)
 
     def withdraw(self, value):
         if value < 0:
@@ -68,11 +90,11 @@ class CheckingAccount:
             print(f'Saldo insuficiente. Tentando sacar R${value} de um total de R${self.balance}')
 
         self.__balance -= value
-        self.__create_operation('Saque', value)
+        self.__create_operation(Withdraw, value)
 
-    def __create_operation(self, operation, value):
+    def __create_operation(self, operation_constructor: type[Operation], value):
         current_datetime = datetime.datetime.now()
-        current_operation = Operation(current_datetime, operation, value)
+        current_operation = operation_constructor(current_datetime, value)
         self.__operations.append(current_operation)
 
     @property
@@ -101,7 +123,7 @@ class CheckingAccount:
 
 class AdditionalLimitAccount(CheckingAccount):
     def __init__(self, owners, balance=0, additional_limit=0):
-        super().__init__(owners, balance)
+        CheckingAccount.__init__(owners, balance)
         self.__additional_limit = additional_limit
 
     def withdraw(self, value):
@@ -113,7 +135,7 @@ class AdditionalLimitAccount(CheckingAccount):
             print(f'Saldo insuficiente. Tentando sacar R${value} de um total de R${self.balance} + R${self.__additional_limit} = R${total_balance}')
 
         self.__balance -= value
-        self.__create_operation('Saque', value)
+        self.__create_operation(Withdraw, value)
 
     def add_limit(self, limit):
         '''aceita valores negativos'''
@@ -127,12 +149,10 @@ class AdditionalLimitAccount(CheckingAccount):
     def additional_limit(self, new_limit):
         self.__additional_limit = new_limit
 
-    
-
 
 class SavingsAccount(CheckingAccount):
     def __init__(self, owners, balance=0):
-        super().__init__(owners, balance)
+        CheckingAccount.__init__(owners, balance)
         self.__rate_of_interest = 0.05
 
     def increase_balance(self):
@@ -160,7 +180,7 @@ class Bank:
     def accounts(self, new_accounts):
         self.__accounts = new_accounts
 
-    def _search(self, name):
+    def __search(self, name):
         for i, account in enumerate(self.__accounts):
             for owner in account.owners:
                 if name == owner.name:
@@ -168,25 +188,28 @@ class Bank:
         
         return None
 
-    def search_account_by_name(self, name):
-        return self._search(name)
+    def get_account_by_name(self, name):
+        return self.__accounts[self.__search(name)]
 
     def add_account(self, account):
-
         self.__accounts.append(account)
 
     def remove_account_by_name(self, name):
-        return self._search(name)
+        account_index = self.__search(name)
+        self.__accounts.pop(account_index)
 
 
 clients = [Client('Luan', '48984449999')]
-acc = CheckingAccount(clients, 400)
+bank = Bank('Tatu')
+bank.add_account(CheckingAccount(clients, 400))
+acc = bank.get_account_by_name('Luan')
 acc.deposit(502)
 acc.withdraw(2)
 acc.deposit(3)
 acc.withdraw(200)
 acc.withdraw(200)
 
+print(f'Titulares da conta: {acc.owners}')
 for operation in acc.operations:
     formatted_time = operation.date.strftime('%d/%m/%Y %H:%M:%S')
     print(f'{operation.operation}: R${operation.value:.2f}, {formatted_time}')
