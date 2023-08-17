@@ -104,6 +104,21 @@ class AdditionalLimitAccount(CheckingAccount):
         super().__init__(owners, balance)
         self.__additional_limit = additional_limit
 
+    def withdraw(self, value):
+        if value < 0:
+            raise ValueError
+
+        total_balance = self.balance + self.__additional_limit
+        if value > total_balance:
+            print(f'Saldo insuficiente. Tentando sacar R${value} de um total de R${self.balance} + R${self.__additional_limit} = R${total_balance}')
+
+        self.__balance -= value
+        self.__create_operation('Saque', value)
+
+    def add_limit(self, limit):
+        '''aceita valores negativos'''
+        self.__additional_limit += limit
+
     @property
     def additional_limit(self):
         return self.__additional_limit
@@ -112,9 +127,7 @@ class AdditionalLimitAccount(CheckingAccount):
     def additional_limit(self, new_limit):
         self.__additional_limit = new_limit
 
-    def add_limit(self, limit):
-        '''aceita valores negativos'''
-        self.__additional_limit += limit
+    
 
 
 class SavingsAccount(CheckingAccount):
