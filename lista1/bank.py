@@ -1,4 +1,5 @@
 import datetime
+from abc import ABC
 
 class Client:
     def __init__(self, name, telephone):
@@ -25,7 +26,7 @@ class Client:
         return f'<{self.__name}, {self.__telephone}>'
         
 
-class Operation:
+class Operation(ABC):
     def __init__(self, date, value):
         self.__date = date
         self.__value = value
@@ -61,7 +62,7 @@ class Deposit(Operation):
         return Deposit.__operation
 
 
-class CheckingAccount:
+class Account(ABC):
     def __init__(self, owners, balance=0):
         self.__owners = owners
         self.__balance = balance
@@ -121,9 +122,14 @@ class CheckingAccount:
         return self.__operations.copy()
 
 
-class AdditionalLimitAccount(CheckingAccount):
+class CheckingAccount(Account):
+    def __init__(self, owners, balance=0):
+        Account.__init__(self, owners, balance)
+
+
+class AdditionalLimitAccount(Account):
     def __init__(self, owners, balance=0, additional_limit=0):
-        CheckingAccount.__init__(owners, balance)
+        Account.__init__(self, owners, balance)
         self.__additional_limit = additional_limit
 
     def withdraw(self, value):
@@ -150,9 +156,9 @@ class AdditionalLimitAccount(CheckingAccount):
         self.__additional_limit = new_limit
 
 
-class SavingsAccount(CheckingAccount):
+class SavingsAccount(Account):
     def __init__(self, owners, balance=0):
-        CheckingAccount.__init__(owners, balance)
+        Account.__init__(self, owners, balance)
         self.__rate_of_interest = 0.05
 
     def increase_balance(self):
@@ -191,8 +197,14 @@ class Bank:
     def get_account_by_name(self, name):
         return self.__accounts[self.__search(name)]
 
-    def add_account(self, account):
-        self.__accounts.append(account)
+    def add_checking_account(self, owners, balance):
+        self.__accounts.append(CheckingAccount(owners, balance))
+
+    def add_additional_limit_account(self, owners, balance=0, additional_limit=0):
+        self.__accounts.append(AdditionalLimitAccount(owners, balance, additional_limit))
+
+    def add_savings_account(self, owners, balance):
+        self.__accounts.append(SavingsAccount(owners, balance))
 
     def remove_account_by_name(self, name):
         account_index = self.__search(name)
@@ -201,7 +213,10 @@ class Bank:
 
 clients = [Client('Luan', '48984449999')]
 bank = Bank('Tatu')
-bank.add_account(CheckingAccount(clients, 400))
+
+bank.add_checking_account(clients, 400)
+bank.add_savings_account([Client('Jonata', '4820232023')], 1e6)
+
 acc = bank.get_account_by_name('Luan')
 acc.deposit(502)
 acc.withdraw(2)
@@ -215,3 +230,4 @@ for operation in acc.operations:
     print(f'{operation.operation}: R${operation.value:.2f}, {formatted_time}')
 
 
+savings = bank.get_account_by_name('Jonata')
