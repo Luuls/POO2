@@ -81,7 +81,7 @@ class Account(ABC):
             raise ValueError
 
         self.balance += value
-        self.__create_operation(Deposit, value)
+        self._create_operation(Deposit, value)
 
     def withdraw(self, value):
         if value < 0:
@@ -91,12 +91,13 @@ class Account(ABC):
             print(f'Saldo insuficiente. Tentando sacar R${value} de um total de R${self.balance}')
 
         self.balance -= value
-        self.__create_operation(Withdraw, value)
+        self._create_operation(Withdraw, value)
 
-    def __create_operation(self, operation_constructor: type[Operation], value):
+    def _create_operation(self, operation_constructor: type[Operation], value):
         current_datetime = datetime.datetime.now()
         current_operation = operation_constructor(current_datetime, value)
         self.__operations.append(current_operation)
+        print(len(self.__operations))
 
     @property
     def owners(self):
@@ -141,7 +142,7 @@ class AdditionalLimitAccount(Account):
             print(f'Saldo insuficiente. Tentando sacar R${value} de um total de R${self.balance} + R${self.__additional_limit} = R${total_balance}')
 
         self.__balance -= value
-        self.__create_operation(Withdraw, value)
+        self._create_operation(Withdraw, value)
 
     def add_limit(self, limit):
         '''aceita valores negativos'''
@@ -165,11 +166,12 @@ class SavingsAccount(Account):
         pass
 
     def last_operation_date(self):
-        return self.__operations[-1].date
+        print(len(self.operations))
+        return self.operations[-1].date
 
     def increase_balance(self):
         self.__balance *= (1 + self.__rate_of_interest)
-        # self.__create_operation()
+        # self._create_operation()
 
 
 class Bank:
@@ -188,8 +190,9 @@ class Bank:
         self.__accounts.append(AdditionalLimitAccount(owners, balance, additional_limit))
 
     def add_savings_account(self, owners, balance=0):
-        self.__saving_accounts.append(SavingsAccount(owners, balance))
-        self.__accounts.append(SavingsAccount(owners, balance))
+        account = SavingsAccount(owners, balance)
+        self.__saving_accounts.append(account)
+        self.__accounts.append(account)
 
     def remove_account_by_name(self, name):
         account_index = self.__search(name)
