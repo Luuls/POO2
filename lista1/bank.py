@@ -80,7 +80,7 @@ class Account(ABC):
         if value < 0:
             raise ValueError
 
-        self.__balance += value
+        self.balance += value
         self.__create_operation(Deposit, value)
 
     def withdraw(self, value):
@@ -90,7 +90,7 @@ class Account(ABC):
         if value > self.balance:
             print(f'Saldo insuficiente. Tentando sacar R${value} de um total de R${self.balance}')
 
-        self.__balance -= value
+        self.balance -= value
         self.__create_operation(Withdraw, value)
 
     def __create_operation(self, operation_constructor: type[Operation], value):
@@ -160,18 +160,16 @@ class SavingsAccount(Account):
     def __init__(self, owners, balance=0):
         Account.__init__(self, owners, balance)
         self.__rate_of_interest = 0.05
-        self.__seconds_since_operation = 0
 
     def update(self):
-        if self.__seconds_since_operation == 59:
-            self.__seconds_since_operation = 0
-            self.increase_balance()
-            return
+        pass
 
-        self.__seconds_since_operation += 1
+    def last_operation_date(self):
+        return self.__operations[-1].date
 
     def increase_balance(self):
         self.__balance *= (1 + self.__rate_of_interest)
+        # self.__create_operation()
 
 
 class Bank:
@@ -183,21 +181,25 @@ class Bank:
     def get_account_by_name(self, name):
         return self.__accounts[self.__search(name)]
 
-    def add_checking_account(self, owners, balance):
+    def add_checking_account(self, owners, balance=0):
         self.__accounts.append(CheckingAccount(owners, balance))
 
     def add_additional_limit_account(self, owners, balance=0, additional_limit=0):
         self.__accounts.append(AdditionalLimitAccount(owners, balance, additional_limit))
 
-    def add_savings_account(self, owners, balance):
+    def add_savings_account(self, owners, balance=0):
         self.__saving_accounts.append(SavingsAccount(owners, balance))
+        self.__accounts.append(SavingsAccount(owners, balance))
 
     def remove_account_by_name(self, name):
         account_index = self.__search(name)
         self.__accounts.pop(account_index)
 
     def update(self):
-        for account in self.__saving_accounts:
+        for i, account in enumerate(self.__saving_accounts):
+            current_date = datetime.datetime.now()
+            if (current_date - account.last_operation_date()).total_seconds() >= 60:
+                self.__saving_accounts[i].increase_balance()
 
     def __search(self, name):
         for i, account in enumerate(self.__accounts):
@@ -228,7 +230,7 @@ clients = [Client('Luan', '48984449999')]
 bank = Bank('Tatu')
 
 bank.add_checking_account(clients, 400)
-bank.add_savings_account([Client('Jonata', '4820232023')], 1e6)
+bank.add_savings_account([Client('Jonata', '4820232023')], 10**6)
 
 acc = bank.get_account_by_name('Luan')
 acc.deposit(502)
@@ -242,5 +244,9 @@ for operation in acc.operations:
     formatted_time = operation.date.strftime('%d/%m/%Y %H:%M:%S')
     print(f'{operation.operation}: R${operation.value:.2f}, {formatted_time}')
 
-
 savings = bank.get_account_by_name('Jonata')
+savings.deposit(800)
+
+comparing_time = datetime.datetime.now()
+while True:
+    bank.update()
