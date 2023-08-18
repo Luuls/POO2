@@ -160,6 +160,15 @@ class SavingsAccount(Account):
     def __init__(self, owners, balance=0):
         Account.__init__(self, owners, balance)
         self.__rate_of_interest = 0.05
+        self.__seconds_since_operation = 0
+
+    def update(self):
+        if self.__seconds_since_operation == 59:
+            self.__seconds_since_operation = 0
+            self.increase_balance()
+            return
+
+        self.__seconds_since_operation += 1
 
     def increase_balance(self):
         self.__balance *= (1 + self.__rate_of_interest)
@@ -169,6 +178,34 @@ class Bank:
     def __init__(self, name, accounts=[]):
         self.__name = name
         self.__accounts = accounts
+        self.__saving_accounts = []
+
+    def get_account_by_name(self, name):
+        return self.__accounts[self.__search(name)]
+
+    def add_checking_account(self, owners, balance):
+        self.__accounts.append(CheckingAccount(owners, balance))
+
+    def add_additional_limit_account(self, owners, balance=0, additional_limit=0):
+        self.__accounts.append(AdditionalLimitAccount(owners, balance, additional_limit))
+
+    def add_savings_account(self, owners, balance):
+        self.__saving_accounts.append(SavingsAccount(owners, balance))
+
+    def remove_account_by_name(self, name):
+        account_index = self.__search(name)
+        self.__accounts.pop(account_index)
+
+    def update(self):
+        for account in self.__saving_accounts:
+
+    def __search(self, name):
+        for i, account in enumerate(self.__accounts):
+            for owner in account.owners:
+                if name == owner.name:
+                    return i
+        
+        return None
 
     @property
     def name(self):
@@ -185,30 +222,6 @@ class Bank:
     @accounts.setter
     def accounts(self, new_accounts):
         self.__accounts = new_accounts
-
-    def __search(self, name):
-        for i, account in enumerate(self.__accounts):
-            for owner in account.owners:
-                if name == owner.name:
-                    return i
-        
-        return None
-
-    def get_account_by_name(self, name):
-        return self.__accounts[self.__search(name)]
-
-    def add_checking_account(self, owners, balance):
-        self.__accounts.append(CheckingAccount(owners, balance))
-
-    def add_additional_limit_account(self, owners, balance=0, additional_limit=0):
-        self.__accounts.append(AdditionalLimitAccount(owners, balance, additional_limit))
-
-    def add_savings_account(self, owners, balance):
-        self.__accounts.append(SavingsAccount(owners, balance))
-
-    def remove_account_by_name(self, name):
-        account_index = self.__search(name)
-        self.__accounts.pop(account_index)
 
 
 clients = [Client('Luan', '48984449999')]
