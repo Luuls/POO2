@@ -380,6 +380,7 @@ for shape in shapes:
     print(f'perímetro: {shape.perimeter():.2f} u.c.')
 
 
+# 10
 class Fraction:
     def __init__(self, numerator, denominator=1):
         self.__numerator = numerator
