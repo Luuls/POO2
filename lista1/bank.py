@@ -62,6 +62,16 @@ class Deposit(Operation):
         return Deposit.__operation
 
 
+class Yield(Operation):
+    __operation = 'Rendimento'
+
+    def __init__(self, date, value):
+        Operation.__init__(self, date, value)
+
+    @property
+    def operation(self):
+        return Yield.__operation
+
 class Account(ABC):
     def __init__(self, owners, balance=0):
         self.__owners = owners
@@ -97,7 +107,6 @@ class Account(ABC):
         current_datetime = datetime.datetime.now()
         current_operation = operation_constructor(current_datetime, value)
         self.__operations.append(current_operation)
-        print(len(self.__operations))
 
     @property
     def owners(self):
@@ -141,7 +150,7 @@ class AdditionalLimitAccount(Account):
         if value > total_balance:
             print(f'Saldo insuficiente. Tentando sacar R${value} de um total de R${self.balance} + R${self.__additional_limit} = R${total_balance}')
 
-        self.__balance -= value
+        self.balance -= value
         self._create_operation(Withdraw, value)
 
     def add_limit(self, limit):
@@ -166,18 +175,23 @@ class SavingsAccount(Account):
         pass
 
     def last_operation_date(self):
-        print(len(self.operations))
+        if len(self.operations) == 0:
+            raise BufferError
+
         return self.operations[-1].date
 
     def increase_balance(self):
-        self.__balance *= (1 + self.__rate_of_interest)
-        # self._create_operation()
+        value = self.balance * self.__rate_of_interest
+        self.balance += value
+        self._create_operation(Yield, value)
 
 
 class Bank:
     def __init__(self, name, accounts=[]):
         self.__name = name
         self.__accounts = accounts
+
+        # lista de contas poupança só pra facilitar o percorrimento
         self.__saving_accounts = []
 
     def get_account_by_name(self, name):
@@ -201,8 +215,13 @@ class Bank:
     def update(self):
         for i, account in enumerate(self.__saving_accounts):
             current_date = datetime.datetime.now()
-            if (current_date - account.last_operation_date()).total_seconds() >= 60:
-                self.__saving_accounts[i].increase_balance()
+            time_difference = current_date - account.last_operation_date()
+
+            # rendendo a cada 3 segundos para efeito de teste. O certo seria a cada 1 mês
+            if time_difference.total_seconds() >= 3:
+                savings_account = self.__saving_accounts[i]
+                savings_account.increase_balance()
+                print(f'Conta de {savings_account.owners} rendendo. Saldo: {savings_account.balance}')
 
     def __search(self, name):
         for i, account in enumerate(self.__accounts):
