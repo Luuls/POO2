@@ -221,7 +221,7 @@ class Bank:
             if time_difference.total_seconds() >= 3:
                 savings_account = self.__saving_accounts[i]
                 savings_account.increase_balance()
-                print(f'Conta de {savings_account.owners} rendendo. Saldo: {savings_account.balance}')
+                print(f'Conta de {savings_account.owners} rendendo. Saldo: R${savings_account.balance:.2f}')
 
     def __search(self, name):
         for i, account in enumerate(self.__accounts):
@@ -265,6 +265,8 @@ print(f'Titulares da conta: {acc.owners}')
 for operation in acc.operations:
     formatted_time = operation.date.strftime('%d/%m/%Y %H:%M:%S')
     print(f'{operation.operation}: R${operation.value:.2f}, {formatted_time}')
+
+print('\n')
 
 savings = bank.get_account_by_name('Jonata')
 savings.deposit(800)
