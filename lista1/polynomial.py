@@ -3,11 +3,12 @@ class Monomial:
         self.__degree = degree
         self.__coefficient = coefficient
 
-    def compute(self, input_value: int) -> float:
+    def compute(self, input_value: float) -> float:
         return self.__coefficient * input_value ** self.__degree
 
-    def multiply_by_constant(self, value: float):
+    def multiply_by_constant(self, value: float) -> 'Monomial':
         self.__coefficient *= value
+        return self
 
     def get_degree(self) -> int:
         return self.__degree
@@ -39,7 +40,7 @@ class Polynomial:
         self.__terms = sorted(terms, key=lambda term: term.get_degree())
         self.__degree = self.__terms[-1].get_degree()
 
-    def compute(self, input_value) -> float:
+    def compute(self, input_value: float) -> float:
         result: float = 0
         for term in self.__terms:
             result += term.compute(input_value)
@@ -54,9 +55,11 @@ class Polynomial:
 
         return Polynomial(new_terms)
 
-    def multiply_by_constant_in_place(self, value):
+    def multiply_by_constant_in_place(self, value) -> 'Polynomial':
         for i, term in enumerate(self.__terms):
             self.__terms[i].multiply_by_constant(value)
+
+        return self
 
     def get_terms(self) -> list[Monomial]:
         return self.__terms.copy()
@@ -65,7 +68,7 @@ class Polynomial:
         self.__terms = new_terms
         self.__degree = self.__terms[-1].get_degree()
 
-    def get_degree(self):
+    def get_degree(self) -> int:
         return self.__degree
 
     def __add__(self, other: 'Polynomial') -> 'Polynomial':
@@ -103,7 +106,7 @@ class Polynomial:
 
         return Polynomial(result)
 
-    def __sub__(self, other):
+    def __sub__(self, other) -> 'Polynomial':
         return self.multiply_by_constant(-1) + other
         
     def __repr__(self) -> str:
@@ -116,6 +119,7 @@ print(f'  {pol1}')
 pol2 = Polynomial([Monomial(3), Monomial(4), Monomial(5)])
 print(f'+ {pol2}')
 print(f'\n= {pol1 + pol2}')
+print(f'pol1 - pol2 = {pol1 - pol2}')
 
 print(pol1.compute(0))
 print(pol1.compute(1))
