@@ -3,10 +3,13 @@ class Monomial:
         self.__degree = degree
         self.__coefficient = coefficient
 
-    def compute(self, input_value: float) -> float:
+    def __call__(self, input_value: float) -> float:
         return self.__coefficient * input_value ** self.__degree
 
     def multiply_by_constant(self, value: float) -> 'Monomial':
+        return Monomial(self.__degree, self.__coefficient * value)
+
+    def multiply_by_constant_in_place(self, value: float) -> 'Monomial':
         self.__coefficient *= value
         return self
 
@@ -26,6 +29,9 @@ class Monomial:
         return Monomial(self.__degree, self.__coefficient + other.get_coefficient())
 
     def __str__(self) -> str:
+        if self.__degree == 0:
+            return f'{self.__coefficient}'
+
         return f'{self.__coefficient}x^{self.__degree}'
 
     def __repr__(self) -> str:
@@ -40,24 +46,24 @@ class Polynomial:
         self.__terms = sorted(terms, key=lambda term: term.get_degree())
         self.__degree = self.__terms[-1].get_degree()
 
-    def compute(self, input_value: float) -> float:
+    def __call__(self, input_value: float) -> float:
         result: float = 0
         for term in self.__terms:
-            result += term.compute(input_value)
+            result += term.__call__(input_value)
 
         return result
         
-    def multiply_by_constant(self, value) -> 'Polynomial':
-        '''returns a new polynomial with terms multiplied by the passed constant'''
-        new_terms = self.__terms.copy()
-        for i, term in enumerate(self.__terms):
-            new_terms[i].multiply_by_constant(value)
+    def multiply_by_constant(self, value: float) -> 'Polynomial':
+        '''returns a new polynomial with terms multiplied by the constant passed to the method'''
+        new_terms: list[Monomial] = []
+        for term in self.__terms:
+            new_terms.append(term.multiply_by_constant(value))
 
         return Polynomial(new_terms)
 
     def multiply_by_constant_in_place(self, value) -> 'Polynomial':
         for i, term in enumerate(self.__terms):
-            self.__terms[i].multiply_by_constant(value)
+            self.__terms[i].multiply_by_constant_in_place(value)
 
         return self
 
@@ -88,41 +94,43 @@ class Polynomial:
                 if terms_sum.get_coefficient() != 0:
                     result.append(terms_sum)
 
-                if self_index < self_len:
-                    self_index += 1
-
-                if other_index < other_len:
-                    other_index += 1
+                self_index += self_index < self_len
+                other_index += other_index < other_len
 
             elif self_term.get_degree() > other_term.get_degree():
                 result.append(other_term)
-                if other_index < other_len:
-                    other_index += 1
+                other_index += other_index < other_len
 
             elif self_term.get_degree() < other_term.get_degree():
                 result.append(self_term)
-                if self_index < self_len:
-                    self_index += 1
+                self_index += self_index < self_len
 
         return Polynomial(result)
 
     def __sub__(self, other) -> 'Polynomial':
         return self.multiply_by_constant(-1) + other
         
-    def __repr__(self) -> str:
+    def __str__(self) -> str:
         return ' + '.join([str(term) for term in self.__terms])
 
+    def __repr__(self) -> str:
+        return str(self)
 
-pol1 = Polynomial([Monomial(2), Monomial(0), Monomial(1), Monomial(3), Monomial(5)])
-print(f'  {pol1}')
+
+pol1 = Polynomial([Monomial(2), Monomial(0), Monomial(1), Monomial(3), Monomial(5, -1)])
+print(f'pol1:  {pol1}')
 
 pol2 = Polynomial([Monomial(3), Monomial(4), Monomial(5)])
-print(f'+ {pol2}')
-print(f'\n= {pol1 + pol2}')
+print(f'pol2:  {pol2}')
+print(f'pol1 + pol2 = {pol1 + pol2}')
 print(f'pol1 - pol2 = {pol1 - pol2}')
 
-print(pol1.compute(0))
-print(pol1.compute(1))
-print(pol1.compute(2))
-
-print(pol2.compute(5))
+print(f'{pol1(0) = }')
+print(f'{pol1(1) = }')
+print(f'{pol1(2) = }')
+print(f'{pol1(5) = }')
+print('\n')
+print(f'{pol2(0) = }')
+print(f'{pol2(1) = }')
+print(f'{pol2(2) = }')
+print(f'{pol2(5) = }')
