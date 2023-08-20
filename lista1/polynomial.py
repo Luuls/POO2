@@ -3,25 +3,25 @@ class Monomial:
         self.__degree = degree
         self.__coefficient = coefficient
 
-    def calculate(self, input: int):
-        return self.__coefficient * input ** self.__degree
+    def compute(self, input_value: int) -> float:
+        return self.__coefficient * input_value ** self.__degree
 
-    def multiply_by_constant(self, value):
+    def multiply_by_constant(self, value: float):
         self.__coefficient *= value
 
-    def get_degree(self):
+    def get_degree(self) -> int:
         return self.__degree
 
     def set_degree(self, value: int):
         self.__degree = value
 
-    def get_coefficient(self):
+    def get_coefficient(self) -> float:
         return self.__coefficient
 
     def set_coefficient(self, value: int):
         self.__coefficient = value
 
-    def __add__(self, other: 'Monomial'):
+    def __add__(self, other: 'Monomial') -> 'Monomial':
         return Monomial(self.__degree, self.__coefficient + other.get_coefficient())
 
     def __str__(self) -> str:
@@ -38,7 +38,26 @@ class Polynomial:
             
         self.__terms = sorted(terms, key=lambda term: term.get_degree())
         self.__degree = self.__terms[-1].get_degree()
+
+    def compute(self, input_value) -> float:
+        result: float = 0
+        for term in self.__terms:
+            result += term.compute(input_value)
+
+        return result
         
+    def multiply_by_constant(self, value) -> 'Polynomial':
+        '''returns a new polynomial with terms multiplied by the passed constant'''
+        new_terms = self.__terms.copy()
+        for i, term in enumerate(self.__terms):
+            new_terms[i].multiply_by_constant(value)
+
+        return Polynomial(new_terms)
+
+    def multiply_by_constant_in_place(self, value):
+        for i, term in enumerate(self.__terms):
+            self.__terms[i].multiply_by_constant(value)
+
     def get_terms(self) -> list[Monomial]:
         return self.__terms.copy()
 
@@ -84,18 +103,6 @@ class Polynomial:
 
         return Polynomial(result)
 
-    def multiply_by_constant(self, value) -> 'Polynomial':
-        '''returns a new polynomial with terms multiplied by the passed constant'''
-        new_terms = self.__terms.copy()
-        for i, term in enumerate(self.__terms):
-            new_terms[i].multiply_by_constant(value)
-
-        return Polynomial(new_terms)
-
-    def multiply_by_constant_in_place(self, value):
-        for i, term in enumerate(self.__terms):
-            self.__terms[i].multiply_by_constant(value)
-
     def __sub__(self, other):
         return self.multiply_by_constant(-1) + other
         
@@ -110,3 +117,8 @@ pol2 = Polynomial([Monomial(3), Monomial(4), Monomial(5)])
 print(f'+ {pol2}')
 print(f'\n= {pol1 + pol2}')
 
+print(pol1.compute(0))
+print(pol1.compute(1))
+print(pol1.compute(2))
+
+print(pol2.compute(5))
