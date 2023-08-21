@@ -52,6 +52,9 @@ class Polynomial:
             result += term.__call__(input_value)
 
         return result
+
+    def plot(self):
+        pass
         
     def multiply_by_constant(self, value: float) -> 'Polynomial':
         '''Retorna um novo polinômio com os termos multiplicados pela constante que foi passada para o método'''
@@ -97,20 +100,60 @@ class Polynomial:
         return str(self)
 
 
-pol1 = Polynomial([Monomial(2), Monomial(0), Monomial(1), Monomial(3), Monomial(5, -1)])
-print(f'pol1:  {pol1}')
+if __name__ == '__main__':
+    print('Calculadora de polinômios')
 
-pol2 = Polynomial([Monomial(3), Monomial(4), Monomial(5)])
-print(f'pol2:  {pol2}')
-print(f'pol1 + pol2 = {pol1 + pol2}')
-print(f'pol1 - pol2 = {pol1 - pol2}')
+    polynomials: dict[str, Polynomial] = {}
+    names = ['p', 'q']
+    for name in names:
+        print(f'\nPreenchimento do polinômio {name}(x)')
+        print('Pressione EOF -> CTRL + Z (Windows) ou CTRL + D (Linux) para finalizar\n')
+        i = 0
+        terms: list[Monomial] = []
+        while True:
+            try:
+                coefficient = float(input(f'Insira o coeficiente do {i + 1}° termo (grau {i}): '))
 
-print(f'{pol1(0) = }')
-print(f'{pol1(1) = }')
-print(f'{pol1(2) = }')
-print(f'{pol1(5) = }')
-print('\n')
-print(f'{pol2(0) = }')
-print(f'{pol2(1) = }')
-print(f'{pol2(2) = }')
-print(f'{pol2(5) = }')
+            except EOFError:
+                print('\n')
+                break
+
+            if coefficient != 0:
+                terms.append(Monomial(i, coefficient))
+
+            i += 1
+
+        polynomials[name] = Polynomial(terms)
+
+    pol1, pol2 = polynomials.values()
+    options = ['somar', 'acessar o grau', 'plotar']
+    while True:
+        print(f'p(x) = {pol1}')
+        print(f'q(x) = {pol2}')
+
+        print('Selecione uma opção (EOF para sair):')
+        for i, option in enumerate(options):
+            print(f'[{i + 1}] {option}')
+
+        try:
+            option_chosen = int(input('\n'))
+
+        except EOFError:
+            print('Bons estudos!')
+            break
+
+        if option_chosen == 1:
+            print(f'p(x) + q(x) = {pol1 + pol2}\n')
+
+        elif option_chosen == 2:
+            print('Grau de qual polinômio?')
+            for i, name in enumerate(names):
+                print(f'[{i + 1}] {name}(x)')
+
+            polynomial_chosen = int(input())
+            print(f'O grau de {names[polynomial_chosen - 1]}(x) é {polynomials[names[polynomial_chosen - 1]].get_degree()}')
+
+        elif option_chosen == 3:
+            pass
+
+        print('\n')
