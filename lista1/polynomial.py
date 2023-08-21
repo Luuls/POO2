@@ -141,7 +141,7 @@ if __name__ == '__main__':
         polynomials[name] = Polynomial(terms)
 
     p, q = polynomials.values()
-    options = ['somar', 'multiplicar', 'acessar o grau', 'calcular', 'plotar']
+    options = ['somar', 'multiplicar', 'acessar o grau', 'calcular']
     while True:
         print(f'p(x) = {p}')
         print(f'q(x) = {q}')
@@ -183,7 +183,7 @@ if __name__ == '__main__':
             pol = polynomials[name]
             print(f'{name}({value_input}) = {pol(value_input)}')
 
-        elif option_chosen == 5:
-            pass
+        # elif option_chosen == 5:
+        #     pass
 
         print('\n')
