@@ -43,7 +43,7 @@ class Polynomial:
         if len(terms) == 0:
             raise BufferError('Cannot construct a polynomial with 0 terms')
             
-        self.__terms = sorted(terms, key=lambda term: term.get_degree())
+        self.__terms = sorted(terms, key=lambda term: term.get_degree(), reverse=True)
         self.__degree = self.__terms[-1].get_degree()
 
     def __call__(self, input_value: float) -> float:
