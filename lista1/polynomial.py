@@ -28,6 +28,9 @@ class Monomial:
     def __add__(self, other: 'Monomial') -> 'Monomial':
         return Monomial(self.__degree, self.__coefficient + other.get_coefficient())
 
+    def __mul__(self, other: 'Monomial') -> 'Monomial':
+        return Monomial(self.__degree + other.get_degree(), self.__coefficient * other.get_coefficient())
+
     def __str__(self) -> str:
         if self.__degree == 0:
             return f'{self.__coefficient}'
@@ -81,7 +84,7 @@ class Polynomial:
         return self.__degree
 
     def __add__(self, other: 'Polynomial') -> 'Polynomial':
-        # Dicionário de grau para coeficiente
+        # mapeia de grau para coeficiente
         result: dict[int, float] = {}
 
         for monomial in (self.__terms + other.get_terms()):
@@ -90,8 +93,20 @@ class Polynomial:
         no_zeros_result = [Monomial(degree, coefficient) for degree, coefficient in result.items() if coefficient != 0]
         return Polynomial(no_zeros_result)
 
-    def __sub__(self, other) -> 'Polynomial':
+    def __sub__(self, other: 'Polynomial') -> 'Polynomial':
         return self.multiply_by_constant(-1) + other
+
+    def __mul__(self, other: 'Polynomial') -> 'Polynomial':
+        partial_pols: list[list[Monomial]] = [[] for _ in range(len(self.__terms))]
+        for i, self_term in enumerate(self.__terms):
+            for other_term in other.get_terms():
+                partial_pols[i].append(self_term * other_term)
+
+        result = Polynomial([Monomial(0, 0)])
+        for pol in partial_pols:
+            result += Polynomial(pol)
+
+        return result
         
     def __str__(self) -> str:
         return ' + '.join([str(term) for term in self.__terms])
@@ -126,7 +141,7 @@ if __name__ == '__main__':
         polynomials[name] = Polynomial(terms)
 
     p, q = polynomials.values()
-    options = ['somar', 'acessar o grau', 'calcular', 'plotar']
+    options = ['somar', 'multiplicar', 'acessar o grau', 'calcular', 'plotar']
     while True:
         print(f'p(x) = {p}')
         print(f'q(x) = {q}')
@@ -146,6 +161,9 @@ if __name__ == '__main__':
             print(f'p(x) + q(x) = {p + q}\n')
 
         elif option_chosen == 2:
+            print(f'p(x) * q(x) = {p * q}\n')
+
+        elif option_chosen == 3:
             print('Grau de qual polinômio?')
             for i, name in enumerate(names):
                 print(f'[{i + 1}] {name}(x)')
@@ -153,7 +171,7 @@ if __name__ == '__main__':
             polynomial_chosen = int(input())
             print(f'O grau de {names[polynomial_chosen - 1]}(x) é {polynomials[names[polynomial_chosen - 1]].get_degree()}')
 
-        elif option_chosen == 3:
+        elif option_chosen == 4:
             print('Calcular qual polinômio?')
             for i, name in enumerate(names):
                 print(f'[{i + 1}] {name}(x)')
@@ -165,7 +183,7 @@ if __name__ == '__main__':
             pol = polynomials[name]
             print(f'{name}({value_input}) = {pol(value_input)}')
 
-        elif option_chosen == 4:
+        elif option_chosen == 5:
             pass
 
         print('\n')
