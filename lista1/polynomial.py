@@ -54,7 +54,7 @@ class Polynomial:
         return result
         
     def multiply_by_constant(self, value: float) -> 'Polynomial':
-        '''returns a new polynomial with terms multiplied by the constant passed to the method'''
+        '''Retorna um novo polinômio com os termos multiplicados pela constante que foi passada para o método'''
         new_terms: list[Monomial] = []
         for term in self.__terms:
             new_terms.append(term.multiply_by_constant(value))
@@ -78,34 +78,14 @@ class Polynomial:
         return self.__degree
 
     def __add__(self, other: 'Polynomial') -> 'Polynomial':
-        self_index = other_index = 0
-        self_len = len(self.__terms)
+        # Dicionário de grau para coeficiente
+        result: dict[int, float] = {}
 
-        other_terms = other.get_terms()
-        other_len = len(other_terms)
+        for monomial in (self.__terms + other.get_terms()):
+            result[monomial.get_degree()] = result.get(monomial.get_degree(), 0) + monomial.get_coefficient()
 
-        result: list[Monomial] = []
-        while self_index < self_len or other_index < other_len:
-            self_term = self.__terms[self_index]
-            other_term = other_terms[other_index]
-
-            if self_term.get_degree() == other_term.get_degree():
-                terms_sum = self_term + other_term
-                if terms_sum.get_coefficient() != 0:
-                    result.append(terms_sum)
-
-                self_index += self_index < self_len
-                other_index += other_index < other_len
-
-            elif self_term.get_degree() > other_term.get_degree():
-                result.append(other_term)
-                other_index += other_index < other_len
-
-            elif self_term.get_degree() < other_term.get_degree():
-                result.append(self_term)
-                self_index += self_index < self_len
-
-        return Polynomial(result)
+        no_zeros_result = [Monomial(degree, coefficient) for degree, coefficient in result.items() if coefficient != 0]
+        return Polynomial(no_zeros_result)
 
     def __sub__(self, other) -> 'Polynomial':
         return self.multiply_by_constant(-1) + other
