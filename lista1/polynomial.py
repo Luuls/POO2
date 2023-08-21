@@ -125,11 +125,11 @@ if __name__ == '__main__':
 
         polynomials[name] = Polynomial(terms)
 
-    pol1, pol2 = polynomials.values()
-    options = ['somar', 'acessar o grau', 'plotar']
+    p, q = polynomials.values()
+    options = ['somar', 'acessar o grau', 'calcular', 'plotar']
     while True:
-        print(f'p(x) = {pol1}')
-        print(f'q(x) = {pol2}')
+        print(f'p(x) = {p}')
+        print(f'q(x) = {q}')
 
         print('Selecione uma opção (EOF para sair):')
         for i, option in enumerate(options):
@@ -143,7 +143,7 @@ if __name__ == '__main__':
             break
 
         if option_chosen == 1:
-            print(f'p(x) + q(x) = {pol1 + pol2}\n')
+            print(f'p(x) + q(x) = {p + q}\n')
 
         elif option_chosen == 2:
             print('Grau de qual polinômio?')
@@ -154,6 +154,18 @@ if __name__ == '__main__':
             print(f'O grau de {names[polynomial_chosen - 1]}(x) é {polynomials[names[polynomial_chosen - 1]].get_degree()}')
 
         elif option_chosen == 3:
+            print('Calcular qual polinômio?')
+            for i, name in enumerate(names):
+                print(f'[{i + 1}] {name}(x)')
+
+            polynomial_chosen = int(input())
+            value_input = float(input('Insira um valor de x para avaliar o polinômio: '))
+
+            name = names[polynomial_chosen - 1]
+            pol = polynomials[name]
+            print(f'{name}({value_input}) = {pol(value_input)}')
+
+        elif option_chosen == 4:
             pass
 
         print('\n')
