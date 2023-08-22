@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from math import factorial
 class Series(ABC):
     def __init__(self, cache: dict[int, int] = {}):
         self.__cache = cache
@@ -8,6 +9,21 @@ class Series(ABC):
 
     @abstractmethod
     def __call__(self, n: int) -> int: ...
+
+
+class Factorial(Series):
+    def __init__(self):
+        Series.__init__(self, {0: 1})
+
+    def __call__(self, n: int) -> int:
+        if n < 0:
+            raise ValueError('Can not calculate fibonacci term for n < 0')
+
+        cache = self.get_cache()
+        if n in cache:
+            return cache[n]
+
+        return self(n - 1) * n
 
 
 class Fibonacci(Series):
@@ -66,5 +82,10 @@ print(fibo(10))
 
 print('\nPRIMO')
 prime = Prime()
-for i in range(200):
+for i in range(15):
     print(prime(i))
+
+print('\nFATORIAL')
+factorial = Factorial()
+for i in range(15):
+    print(factorial(i))
