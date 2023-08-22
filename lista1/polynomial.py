@@ -47,7 +47,7 @@ class Polynomial:
             raise BufferError('Cannot construct a polynomial with 0 terms')
             
         self.__terms = sorted(terms, key=lambda term: term.get_degree(), reverse=True)
-        self.__degree = self.__terms[-1].get_degree()
+        self.__degree = self.__terms[0].get_degree()
 
     def __call__(self, input_value: float) -> float:
         result: float = 0
@@ -77,8 +77,9 @@ class Polynomial:
         return self.__terms.copy()
 
     def set_terms(self, new_terms: list[Monomial]) -> None:
-        self.__terms = new_terms
-        self.__degree = self.__terms[-1].get_degree()
+        self.__terms = sorted(terms, key=lambda term: term.get_degree(), reverse=True) 
+
+        self.__degree = self.__terms[0].get_degree()
 
     def get_degree(self) -> int:
         return self.__degree
