@@ -77,8 +77,11 @@ class Prime(Series):
 
         return True
 
+
+print('FIBONACCI')
 fibo = Fibonacci()
-print(fibo(10))
+for i in range(15):
+    print(fibo(i))
 
 print('\nPRIMO')
 prime = Prime()
