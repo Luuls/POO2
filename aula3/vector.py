@@ -1,6 +1,15 @@
+from typing import Iterable, overload
+
+
 class Vector:
+    @overload
     def __init__(self, *elements):
         self.__elements = list(elements)
+        self.__size = len(self.__elements)
+
+    @overload
+    def __init__(self, elements: Iterable):
+        self.__elements = elements
         self.__size = len(self.__elements)
 
     @property
