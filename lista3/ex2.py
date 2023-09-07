@@ -1,3 +1,6 @@
+# link para as stopwords utilizadas neste exercício
+# https://gist.github.com/sebleier/554280
+
 import sys
 
 def get_stopwords(filepath: str) -> set[str]:
