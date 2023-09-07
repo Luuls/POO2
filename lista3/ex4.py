@@ -4,7 +4,7 @@ best_lap_time: float
 best_lap_racer_name: str
 best_lap_number: int
 for i in range(6):
-    name = input(f'Insira o nome do corredor {i + 1} (ou insira nada para concluir): ')
+    name = input(f'Insira o nome do corredor {i + 1}: ')
     racers[name] = []
     time: float
     times_sum = 0
