@@ -35,5 +35,5 @@ for racer_name, times in racers.items():
         min_average = average
         winner_name = racer_name
 
-print(f'A melhor volta foi de {best_lap_racer_name.capitalize()}, sendo {best_lap_time:.2f} na {best_lap_number} volta!')
+print(f'A melhor volta foi de {best_lap_racer_name.capitalize()}, sendo {best_lap_time:.2f} segundos na {best_lap_number}ª volta!')
 print(f'O vencedor foi {winner_name.capitalize()}!')
