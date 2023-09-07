@@ -3,22 +3,16 @@ import sys
 def get_stopwords(filepath: str) -> set[str]:
     stopwords: set[str]
     with open(filepath, 'r') as file:
-        stopwords = set(file.readlines())
+        stopwords = set([x.removesuffix('\n') for x in file.readlines()])
 
     return stopwords
 
-def remove_stopwords(words: dict[str, int], stopwords: set[str]):
-    result = {}
-    for word in words:
-        if word not in stopwords:
-            print(word)
-            result[word] = words[word]
-
-    words = result
+def remove_stopwords_from_text(words: dict[str, int], stopwords: set[str]) -> dict[str, int]:
+    return {word: count for word, count in words.items() if word not in stopwords} 
 
 def main():
     if len(sys.argv) < 2:
-        print('usage: python3 ex2.py [filename].txt')
+        print('usage: python3 ex2.py <text_filename>.txt <stopwords_filename>.txt')
         return
 
     filename = sys.argv[1]
@@ -36,10 +30,10 @@ def main():
             else:
                 words[word] = 1
 
-    print(words)
-    
-    print('WITHOUT STOPWORDS\n')
-    remove_stopwords(words)
+    stopwords = get_stopwords(sys.argv[2])
+    words = remove_stopwords_from_text(words, stopwords)
+
+    print('\nWITHOUT STOPWORDS\n')
     print(words)
 
 if __name__ == '__main__':
