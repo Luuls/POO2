@@ -1,8 +1,11 @@
+# link para o texto utilizado neste exercício
+# https://catdir.loc.gov/catdir/enhancements/fy0711/2006051179-s.html
+
 import sys
 
 def main():
     if len(sys.argv) < 2:
-        print('usage: python3 ex1.py [filename].txt')
+        print('usage: python3 ex1.py <filename>.txt')
         return
 
     filename = sys.argv[1]
