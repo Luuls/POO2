@@ -12,16 +12,60 @@ class Livro:
         self.__autores = [autor] 
 
     def incluirAutor(self, autor: Autor):
+        if not isinstance(autor, Autor):
+            raise TypeError
+
+        try:
+            self.__procurar(self.autores, autor, chave=lambda x: x.codigo)
+
+        # ValueError caso o autor não esteja na lista
+        except ValueError:
+            self.autores.append(autor)
+
+        raise ValueError(f'O autor {autor.codigo} já está incluso neste livro')
 
     def excluirAutor(self, autor: Autor):
+        if not isinstance(autor, Autor):
+            raise TypeError
+
+        try:
+            indice = self.__procurar(self.autores, autor, lambda x: x.codigo)
+
+        except ValueError:
+            raise ValueError(f'O autor {autor.codigo} não está incluso neste livro')
+
+        self.autores.pop(indice)
 
     def incluirCapitulo(self, numeroCapitulo: int, tituloCapitulo: str):
+        if not isinstance(numeroCapitulo, int) or not isinstance(tituloCapitulo, str):
+            raise TypeError
+
+        try:
+            # FIX: o uso da função tá errado aqui, a chave não pode ser a mesma para os dois argumentos
+            self.__procurar(self.capitulos, tituloCapitulo)
+
+        except ValueError:
+            self.capitulos.append(Capitulo(numeroCapitulo, tituloCapitulo))
+
+        raise ValueError(f'O capítulo {tituloCapitulo} já está registrado neste livro')
 
     def excluirCapitulo(self, tituloCapitulo: str):
+        if not isinstance(tituloCapitulo, str):
+            raise TypeError
+
+        # try:
+        #     self.__procurar(self.capitulos, tituloCapitulo)
+        # pass
 
     def findCapituloByTitulo(self, tituloCapitulo: str):
+        pass
 
     def __procurar(self, conteiner, valor, chave=lambda valor: valor):
+        for i, valorInterno in enumerate(conteiner):
+            if chave(valor) == chave(valorInterno):
+                return i
+
+        raise ValueError('Valor não encontrado no contêiner')
 
     # getters e setters
     @property
