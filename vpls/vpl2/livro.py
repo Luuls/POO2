@@ -21,6 +21,7 @@ class Livro:
         # ValueError caso o autor não esteja na lista
         except ValueError:
             self.autores.append(autor)
+            return
 
         raise ValueError(f'O autor {autor.codigo} já está incluso neste livro')
 
@@ -45,6 +46,7 @@ class Livro:
 
         except ValueError:
             self.capitulos.append(Capitulo(numeroCapitulo, tituloCapitulo))
+            return
 
         raise ValueError(f'O capítulo {tituloCapitulo} já está registrado neste livro')
 
@@ -61,7 +63,16 @@ class Livro:
         self.capitulos.pop(indice)
 
     def findCapituloByTitulo(self, tituloCapitulo: str):
-        pass
+        if not isinstance(tituloCapitulo, str):
+            raise TypeError
+
+        try:
+            indice = self.__procurar(self.capitulos, tituloCapitulo, chave=lambda x: x.titulo)
+
+        except ValueError:
+            raise ValueError(f'O capítulo {tituloCapitulo} não está registrado neste livro')
+
+        return self.capitulos[indice]
 
     def __procurar(self, conteiner, valor, chave=lambda x: x):
         for i, valorInterno in enumerate(conteiner):
@@ -106,3 +117,4 @@ class Livro:
     @property
     def autores(self):
         return self.__autores
+
