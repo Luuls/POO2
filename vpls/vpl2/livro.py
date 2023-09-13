@@ -16,7 +16,7 @@ class Livro:
             raise TypeError
 
         try:
-            self.__procurar(self.autores, autor, chave=lambda x: x.codigo)
+            self.__procurar(self.autores, autor.codigo, chave=lambda x: x.codigo)
 
         # ValueError caso o autor não esteja na lista
         except ValueError:
@@ -29,7 +29,7 @@ class Livro:
             raise TypeError
 
         try:
-            indice = self.__procurar(self.autores, autor, lambda x: x.codigo)
+            indice = self.__procurar(self.autores, autor.codigo, lambda x: x.codigo)
 
         except ValueError:
             raise ValueError(f'O autor {autor.codigo} não está incluso neste livro')
@@ -41,8 +41,7 @@ class Livro:
             raise TypeError
 
         try:
-            # FIX: o uso da função tá errado aqui, a chave não pode ser a mesma para os dois argumentos
-            self.__procurar(self.capitulos, tituloCapitulo)
+            self.__procurar(self.capitulos, tituloCapitulo, lambda x: x.titulo)
 
         except ValueError:
             self.capitulos.append(Capitulo(numeroCapitulo, tituloCapitulo))
@@ -53,16 +52,20 @@ class Livro:
         if not isinstance(tituloCapitulo, str):
             raise TypeError
 
-        # try:
-        #     self.__procurar(self.capitulos, tituloCapitulo)
-        # pass
+        try:
+            indice = self.__procurar(self.capitulos, tituloCapitulo, lambda x: x.titulo)
+
+        except ValueError:
+            raise ValueError(f'O capítulo {tituloCapitulo} não está registrado neste livro')
+
+        self.capitulos.pop(indice)
 
     def findCapituloByTitulo(self, tituloCapitulo: str):
         pass
 
-    def __procurar(self, conteiner, valor, chave=lambda valor: valor):
+    def __procurar(self, conteiner, valor, chave=lambda x: x):
         for i, valorInterno in enumerate(conteiner):
-            if chave(valor) == chave(valorInterno):
+            if valor == chave(valorInterno):
                 return i
 
         raise ValueError('Valor não encontrado no contêiner')
