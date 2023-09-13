@@ -7,31 +7,31 @@ class Biblioteca:
 
     def incluirLivro(self, livro: Livro):
         if not isinstance(livro, Livro):
-            raise TypeError
+            return
 
         try:
-            self.__procurar(self.livros, livro.codigo, chave=lambda x: x.codigo)
+            self.__procurar(self.livros, livro.codigo,
+                            lambda x: x.codigo)
 
         except ValueError:
             self.livros.append(livro)
-            return
-
-        raise ValueError(f'O livro {livro.codigo} já está cadastrado nesta biblioteca')
 
     def excluirLivro(self, livro: Livro):
         if not isinstance(livro, Livro):
-            raise TypeError
+            return
 
         try:
-            indice = self.__procurar(self.livros, livro.codigo, chave=lambda x: x.codigo)
+            indice = self.__procurar(self.livros, livro.codigo,
+                                     lambda x: x.codigo)
 
         except ValueError:
-            raise ValueError(f'O livro {livro.codigo} não está cadastrado nesta biblioteca')
+            return
 
         self.livros.pop(indice)
-        return
 
-    # não vou criar uma função global para todas as classes usarem, pois creio que no VPL não vá funcionar
+    # não vou criar uma função global
+    # para todas as classes usarem,
+    # pois creio que no VPL não vá funcionar
     def __procurar(self, conteiner, valor, chave=lambda x: x):
         for i, valorInterno in enumerate(conteiner):
             if valor == chave(valorInterno):
@@ -42,3 +42,4 @@ class Biblioteca:
     @property
     def livros(self):
         return self.__livros
+
