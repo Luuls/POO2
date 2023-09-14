@@ -88,6 +88,7 @@ class TransporteAereo(Transporte):
             autonomia: float,
             envergadura: float
         ):
+
         Transporte.__init__(
             self,
             nome,
@@ -188,6 +189,7 @@ class TransporteAquatico(Transporte):
             boca: float,
             calado: float
         ):
+
         Transporte.__init__(
             self,
             nome,
