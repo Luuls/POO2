@@ -13,8 +13,10 @@ class Pessoa(AbstractPessoa, ABC):
 
         return self.codigo == other.codigo
 
+    @property
     def nome(self) -> str:
         return self.__nome
 
+    @property
     def codigo(self) -> int:
         return self.__codigo

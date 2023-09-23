@@ -10,14 +10,18 @@ class TipoChamado(AbstractTipoChamado):
     def __eq__(self, other):
         if not isinstance(other, TipoChamado):
             return False
-        
+
         return self.codigo == other.codigo
 
+    @property
     def codigo(self) -> int:
         return self.__codigo
 
+    @property
     def descricao(self) -> str:
         return self.__descricao
 
+    @property
     def nome(self) -> str:
         return self.__nome
+

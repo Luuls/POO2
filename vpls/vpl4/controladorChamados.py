@@ -4,17 +4,16 @@ from chamado import Chamado
 from datetime import date as Date
 from cliente import Cliente
 from tecnico import Tecnico
-from collections import defaultdict
 
 
 class ControladorChamados(AbstractControladorChamados):
     def __init__(self):
-        self.__chamados: list[Chamado] = []
-        self.__tipoChamados: list[TipoChamado] = []
+        self.__chamados = []
+        self.__tipoChamados = []
 
     def totalChamadosPorTipo(self, tipo: TipoChamado) -> int:
         if not isinstance(tipo, TipoChamado):
-            return -1
+            return 0
 
         totalChamados = 0
         for chamado in self.__chamados:
@@ -33,13 +32,13 @@ class ControladorChamados(AbstractControladorChamados):
             prioridade: int,
             tipo: TipoChamado) -> Chamado:
         if (
-            not isinstance(data, Date) or
-            not isinstance(cliente, Cliente) or
-            not isinstance(tecnico, Tecnico) or
-            not isinstance(titulo, str) or
-            not isinstance(descricao, str) or
-            not isinstance(prioridade, int) or
-            not isinstance(tipo, TipoChamado)):
+                not isinstance(data, Date) or
+                not isinstance(cliente, Cliente) or
+                not isinstance(tecnico, Tecnico) or
+                not isinstance(titulo, str) or
+                not isinstance(descricao, str) or
+                not isinstance(prioridade, int) or
+                not isinstance(tipo, TipoChamado)):
             return
 
         chamado = Chamado(
@@ -55,9 +54,8 @@ class ControladorChamados(AbstractControladorChamados):
         try:
             self.pesquisar(self.__chamados, chamado)
         except ValueError:
-            return chamado
+            self.__chamados.append(chamado)
 
-        self.__chamados.append(chamado)
         return chamado
 
     def incluiTipoChamado(
@@ -66,9 +64,9 @@ class ControladorChamados(AbstractControladorChamados):
             nome: str,
             descricao: str) -> TipoChamado:
         if (
-            not isinstance(codigo, int) or
-            not isinstance(nome, str) or
-            not isinstance(descricao, str)):
+                not isinstance(codigo, int) or
+                not isinstance(nome, str) or
+                not isinstance(descricao, str)):
             return
 
         tipoChamado = TipoChamado(codigo, descricao, nome)
@@ -76,10 +74,17 @@ class ControladorChamados(AbstractControladorChamados):
         try:
             self.pesquisar(self.__tipoChamados, tipoChamado)
         except ValueError:
-            return tipoChamado
-        
-        self.__tipoChamados.append(tipoChamado)
+            self.__tipoChamados.append(tipoChamado)
+
         return tipoChamado
 
-    def tipoChamados(self) -> list[TipoChamado]:
+    @property
+    def tipoChamados(self) -> list:
         return self.__tipoChamados
+
+    def pesquisar(self, conteiner, valor, predicado=lambda x: x):
+        for i, valorConteiner in enumerate(conteiner):
+            if valor == predicado(valorConteiner):
+                return i
+
+        raise ValueError
