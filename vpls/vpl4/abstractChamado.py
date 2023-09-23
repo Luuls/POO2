@@ -40,3 +40,4 @@ class AbstractChamado(ABC):
 	@abstractmethod
 	def titulo(self) -> str:
 		pass
+

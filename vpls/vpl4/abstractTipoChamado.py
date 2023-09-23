@@ -16,3 +16,4 @@ class AbstractTipoChamado(ABC):
 	@abstractmethod
 	def nome(self) -> str:
 		pass
+
