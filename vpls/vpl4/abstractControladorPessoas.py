@@ -30,3 +30,10 @@ class AbstractControladorPessoas(ABC):
     @abstractmethod
     def incluiTecnico(self, codigo :int, nome :str) -> Tecnico:
         pass
+
+    def pesquisar(self, conteiner, valor, predicado=lambda x: x):
+        for i, valorConteiner in enumerate(conteiner):
+            if valor == predicado(valorConteiner):
+                return i
+        
+        raise ValueError
