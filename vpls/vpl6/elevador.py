@@ -1,0 +1,8 @@
+from abstractElevador import AbstractElevador
+from elevadorCheioException import ElevadorCheioException
+from elevadorJahNoTerreoException import ElevadorJahNoTerreoException
+from elevadorJahNoUltimoAndarException import ElevadorJahNoUltimoAndarException
+from elevadorJahVazioException import ElevadorJahVazioException
+
+
+class Elevador(AbstractElevador):
