@@ -17,13 +17,15 @@ class Factorial(Series):
 
     def __call__(self, n: int) -> int:
         if n < 0:
-            raise ValueError('Can not calculate fibonacci term for n < 0')
+            raise ValueError('Can not calculate factorial term for n < 0')
 
         cache = self.get_cache()
         if n in cache:
             return cache[n]
 
-        return self(n - 1) * n
+        result = self(n - 1) * n
+        cache[n] = result
+        return result
 
 
 class Fibonacci(Series):
@@ -38,7 +40,9 @@ class Fibonacci(Series):
         if n in cache:
             return cache[n]
 
-        return self(n - 2) + self(n - 1)
+        result = self(n - 2) + self(n - 1)
+        cache[n] = result
+        return result
 
 
 class Prime(Series):
